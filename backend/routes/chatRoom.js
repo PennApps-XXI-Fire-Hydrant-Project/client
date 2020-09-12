@@ -29,7 +29,7 @@ router.get('/chatroom/messages/:chatRoomName', async (req, res, next) => {
       },
     });
     const chatRoomId = chatRooms[0].id;
-    const messages = await models.ChatMessage.findAll({
+    const messages = await models.ChatRoomMessage.findAll({
       where: {
         chatRoomId,
       },

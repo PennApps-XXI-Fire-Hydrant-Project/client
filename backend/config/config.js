@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 const dbHost = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
 const dbUsername = process.env.DB_USERNAME;
@@ -11,23 +11,23 @@ module.exports = {
     database: dbName,
     host: dbHost,
     port: dbPort,
-    dialect: "postgres",
+    dialect: 'postgres',
   },
   test: {
     username: dbUsername,
     password: dbPassword,
-    database: "chat_app_test",
+    database: 'chat_app_test',
     host: dbHost,
     port: dbPort,
-    dialect: "postgres",
+    dialect: 'postgres',
   },
   production: {
-    use_env_variable: "DATABASE_URL",
+    use_env_variable: 'DATABASE_URL',
     username: dbUsername,
     password: dbPassword,
     database: dbName,
     host: dbHost,
     port: dbPort,
-    dialect: "postgres",
+    dialect: 'postgres',
   },
 };
