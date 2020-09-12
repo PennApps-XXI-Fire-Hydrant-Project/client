@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const ChatMessage = sequelize.define(
-    'ChatMessage',
+  const ChatRoomMessage = sequelize.define(
+    'ChatRoomMessage',
     {
       chatRoomId: DataTypes.INTEGER,
       author: DataTypes.STRING,
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  ChatMessage.associate = function (models) {
+  ChatRoomMessage.associate = function (models) {
     // associations can be defined here
-    ChatMessage.belongsTo(models.ChatRoom, {
+    ChatRoomMessage.belongsTo(models.ChatRoom, {
       foreignKey: 'chatRoomId',
       targetKey: 'id',
     });
   };
-  return ChatMessage;
+  return ChatRoomMessage;
 };
