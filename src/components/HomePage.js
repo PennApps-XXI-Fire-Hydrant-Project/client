@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Formik } from 'formik';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { Redirect } from 'react-router';
 // import "./HomePage.css";
 import { joinRoom } from '../requests';
-import LeafletMap from './Leaflet';
+import LeafletMap from './LeafletMap';
 
 const schema = yup.object({
   handle: yup.string().required('Handle is required'),
@@ -82,7 +82,7 @@ function HomePage() {
           </Form>
         )}
       </Formik>
-      <LeafletMap/>
+      <LeafletMap />
     </div>
   );
 }
