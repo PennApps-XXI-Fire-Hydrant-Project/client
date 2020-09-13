@@ -2,13 +2,19 @@ import React, { useEffect, useState, Fragment } from 'react';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import axios from 'axios';
 
-const MarkerList = ({ markers }) => {
+const MarkerList = ({ markers, setSelectedChatRoom }) => {
   const items = markers.map(({ unitid, latitude, longitude }) => {
     return (
-      <Marker key={unitid} position={[latitude, longitude]}>
+      <Marker
+        key={unitid}
+        position={[latitude, longitude]}
+        onClick={() => setSelectedChatRoom(unitid)}
+      >
         <Popup>
-          id: {unitid}<br />
-          latitude: {latitude}<br />
+          id: {unitid}
+          <br />
+          latitude: {latitude}
+          <br />
           longitude: {longitude}
         </Popup>
       </Marker>
@@ -17,7 +23,7 @@ const MarkerList = ({ markers }) => {
   return <Fragment>{items}</Fragment>;
 };
 
-const LeafletMap = () => {
+const LeafletMap = ({ setSelectedChatRoom }) => {
   const [coordinates, setCoordinates] = useState(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       console.log('Latitude is :', position.coords.latitude);
@@ -47,7 +53,7 @@ const LeafletMap = () => {
       <Marker position={coordinates}>
         <Popup>Your location</Popup>
       </Marker>
-      <MarkerList markers={markers} />
+      <MarkerList markers={markers} setSelectedChatRoom={setSelectedChatRoom} />
     </Map>
   );
 };
