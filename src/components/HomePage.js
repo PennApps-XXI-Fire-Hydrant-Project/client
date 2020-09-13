@@ -1,88 +1,80 @@
-import React from 'react';
-import { useState } from 'react';
-import { Formik } from 'formik';
+import React, { useState, useContext, useEffect } from 'react';
+import { Redirect } from 'react-router';
+
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import * as yup from 'yup';
-import { Redirect } from 'react-router';
-// import "./HomePage.css";
-import { joinRoom } from '../requests';
 import LeafletMap from './LeafletMap';
 
-const schema = yup.object({
-  handle: yup.string().required('Handle is required'),
-  chatRoomName: yup.string().required('Chat room is required'),
-});
+// import "./HomePage.css";
+import { joinRoom } from '../requests';
+
 function HomePage() {
   const [redirect, setRedirect] = useState(false);
-  const handleSubmit = async (evt) => {
-    const isValid = await schema.validate(evt);
-    if (!isValid) {
-      return;
-    }
-    localStorage.setItem('chatData', JSON.stringify(evt));
-    await joinRoom(evt.chatRoomName);
+  const [userHandle, setUserHandle] = useState('');
+  useEffect(() => {
+    const handle = JSON.parse(localStorage.getItem('chatData') || '{}');
+    setUserHandle(handle.handle);
+  }, []);
+
+  const [selectedChatRoom, setSelectedChatRoom] = useState('');
+  useEffect(() => {
+    const room = JSON.parse(localStorage.getItem('chatData') || '{}');
+    setSelectedChatRoom(room.chatRoomName);
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target),
+      formDataObj = Object.fromEntries(formData.entries());
+    console.log(formDataObj);
+    console.log(e.target);
+
+    localStorage.setItem('chatData', JSON.stringify(formDataObj));
+    await joinRoom(formDataObj.chatRoomName);
     setRedirect(true);
   };
+
+  const handleUserName = (e) => {
+    setUserHandle(e.target.value);
+  };
+
   if (redirect) {
     return <Redirect to='/chatroom' />;
   }
+
   return (
     <div className='home-page'>
-      <h1>Join Chat</h1>
-      <Formik
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-        initialValues={JSON.parse(localStorage.getItem('chatData') || '{}')}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          handleBlur,
-          values,
-          touched,
-          isInvalid,
-          errors,
-        }) => (
-          <Form noValidate onSubmit={handleSubmit}>
-            <Form.Row>
-              <Form.Group as={Col} md='12' controlId='handle'>
-                <Form.Label>Handle</Form.Label>
-                <Form.Control
-                  type='text'
-                  name='handle'
-                  placeholder='Handle'
-                  value={values.handle || ''}
-                  onChange={handleChange}
-                  isInvalid={touched.handle && errors.handle}
-                />
-                <Form.Control.Feedback type='invalid'>
-                  {errors.firstName}
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group as={Col} md='12' controlId='chatRoomName'>
-                <Form.Label>Chat Room Name</Form.Label>
-                <Form.Control
-                  type='text'
-                  name='chatRoomName'
-                  placeholder='Chat Room Name'
-                  value={values.chatRoomName || ''}
-                  onChange={handleChange}
-                  isInvalid={touched.chatRoomName && errors.chatRoomName}
-                />
-                <Form.Control.Feedback type='invalid'>
-                  {errors.chatRoomName}
-                </Form.Control.Feedback>
-              </Form.Group>
-            </Form.Row>
-            <Button type='submit' style={{ marginRight: '10px' }}>
-              Join
-            </Button>
-          </Form>
-        )}
-      </Formik>
-      <LeafletMap />
+      <h1>Join a Hydrant Chat</h1>
+      <Form noValidate onSubmit={handleSubmit}>
+        <Form.Row>
+          <Form.Group as={Col} md='12' controlId='handle'>
+            <Form.Label>Handle</Form.Label>
+            <Form.Control
+              type='text'
+              name='handle'
+              placeholder='Handle'
+              value={userHandle || ''}
+              onChange={handleUserName}
+            />
+          </Form.Group>
+          <Form.Group as={Col} md='12' controlId='chatRoomName'>
+            <Form.Label>Chat Room Name</Form.Label>
+            <Form.Control
+              type='text'
+              name='chatRoomName'
+              placeholder='Chat Room Name'
+              value={selectedChatRoom || ''}
+              readOnly
+            />
+          </Form.Group>
+        </Form.Row>
+        <Button type='submit' style={{ marginRight: '10px' }}>
+          Join
+        </Button>
+      </Form>
+      <LeafletMap setSelectedChatRoom={setSelectedChatRoom} />
     </div>
   );
 }
