@@ -8,6 +8,8 @@ import * as yup from 'yup';
 import { Redirect } from 'react-router';
 // import "./HomePage.css";
 import { joinRoom } from '../requests';
+import LeafletMap from './Leaflet';
+
 const schema = yup.object({
   handle: yup.string().required('Handle is required'),
   chatRoomName: yup.string().required('Chat room is required'),
@@ -80,6 +82,7 @@ function HomePage() {
           </Form>
         )}
       </Formik>
+      <LeafletMap/>
     </div>
   );
 }
